@@ -1,585 +1,202 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#17142b">
-<title>HAUNTED EMPIRE</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#171329">
+<title>HAUNTED EMPIRE 2.0</title>
 
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;background:#100f20;color:white;
+ margin:0;background:#100e20;color:#fff;
  font-family:Arial,sans-serif;
- min-height:100vh;
 }
-button{font:inherit;cursor:pointer;border:0}
-#game{max-width:520px;margin:auto;min-height:100vh;background:#19172d;padding-bottom:85px;overflow:hidden;position:relative}
+button{font:inherit;cursor:pointer}
+#game{max-width:650px;margin:auto;min-height:100vh;background:#19162d;padding-bottom:85px}
 header{
- display:flex;justify-content:space-between;align-items:center;
- padding:15px;background:#24203e;border-bottom:2px solid #393158;
+ background:#27203d;padding:15px;
+ display:flex;align-items:center;justify-content:space-between;
+ border-bottom:2px solid #514269;
+ position:sticky;top:0;z-index:20;
 }
-.logo{font-weight:1000;font-size:19px;color:#f3d67c}
-.level{font-size:12px;color:#c5bde8;margin-top:4px}
-.coins{background:#332b4e;padding:10px 13px;border-radius:20px;color:#ffe28b;font-weight:bold}
-.hero{
- padding:22px 16px 15px;text-align:center;
- background:linear-gradient(#28234c,#17152c);
-}
-.hero h1{font-size:25px;margin:0;color:#f8d985}
-.hero p{font-size:12px;color:#c4bddf;margin:7px 0}
-.xpbar{height:8px;background:#423b5d;border-radius:20px;margin:12px auto;width:75%;overflow:hidden}
-#xp{height:100%;width:0;background:#a98cff;transition:.3s}
-.scene{
- margin:12px;background:linear-gradient(#25264d 0%,#39345f 58%,#24213d 59%);
- border:2px solid #554b77;border-radius:18px;
- min-height:285px;position:relative;overflow:hidden;
+.logo{font-weight:1000;font-size:20px;color:#ffdc8b}
+.sub{font-size:11px;color:#c8b9e0;margin-top:5px}
+.coin-pill{background:#413252;border-radius:25px;padding:12px;color:#ffe08b;font-weight:bold}
+.dashboard{padding:15px;text-align:center;background:linear-gradient(#30254b,#201b36)}
+.dashboard h2{margin:3px;color:#ffdc8b;font-size:23px}
+.dashboard p{font-size:12px;color:#d0c5e5}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px}
+.stat{background:#302944;border:1px solid #59496c;border-radius:13px;padding:12px 3px;text-align:center}
+.stat b{display:block;color:#ffdb89;font-size:19px}
+.stat small{font-size:10px;color:#c7badb}
+.progress{height:8px;background:#493c5b;border-radius:10px;overflow:hidden;margin:10px auto;width:85%}
+#xpbar{height:100%;background:#a982ed;width:0%}
+.scene-title{padding:12px 15px;color:#ffdc8b;font-weight:bold;font-size:16px}
+.mansion-scene{
+ position:relative;margin:0 10px 15px;
+ padding:65px 10px 18px;
+ border:3px solid #625078;border-radius:18px;
+ background:
+ radial-gradient(circle at 50% 15%,#595077 0%,transparent 38%),
+ linear-gradient(#1d2140,#393052 70%,#211a32);
+ overflow:hidden;
 }
 .moon{
- position:absolute;right:35px;top:24px;width:48px;height:48px;
- background:#ffe8a2;border-radius:50%;box-shadow:0 0 28px #ffe8a2;
+ position:absolute;top:22px;right:35px;
+ width:65px;height:65px;border-radius:50%;
+ background:#ffe8a6;
+ box-shadow:0 0 35px #ffdf8b;
 }
-.stars{position:absolute;inset:0;color:#fff6b8;font-size:13px;letter-spacing:20px;line-height:35px;opacity:.8}
-.hotel{
- position:absolute;bottom:0;left:50%;transform:translateX(-50%);
- width:76%;height:205px;background:#665078;
- border:4px solid #30243e;border-bottom:0;
- border-radius:8px 8px 0 0;
-}
+.star{position:absolute;color:#fff0ad;animation:twinkle 2s infinite alternate}
+.star.s1{top:35px;left:12%}
+.star.s2{top:100px;right:20%}
+.star.s3{top:25px;left:48%}
+.bat{position:absolute;z-index:8;font-size:24px;animation:fly 7s linear infinite}
+.b1{top:70px;left:10%}
+.b2{top:125px;right:8%;animation-delay:2s}
+.b3{top:25px;left:60%;animation-delay:4s}
+@keyframes fly{0%{transform:translateX(-20px)}50%{transform:translateX(45px) translateY(-12px)}100%{transform:translateX(-20px)}}
+@keyframes twinkle{to{opacity:.35;transform:scale(.8)}}
+@keyframes float{50%{transform:translateY(-8px)}}
+@keyframes flicker{50%{opacity:.55}}
 .roof{
- position:absolute;top:-42px;left:-10px;width:calc(100% + 20px);
- height:55px;background:#382d53;
- clip-path:polygon(50% 0,100% 100%,0 100%);
+ position:relative;height:110px;
+ background:linear-gradient(140deg,#42314f,#211b34);
+ border:5px solid #21182d;
+ clip-path:polygon(0 100%,12% 45%,28% 65%,50% 0,72% 58%,88% 35%,100% 100%);
+ margin:0 -3px -3px;
 }
-.sign{
- position:absolute;top:15px;left:50%;transform:translateX(-50%);
- color:#ffe4a0;font-weight:1000;font-size:12px;
- white-space:nowrap;background:#342541;padding:6px 10px;border-radius:5px;
+.roof-details{
+ position:absolute;inset:10px 5%;
+ display:flex;align-items:flex-end;justify-content:space-around;
+ font-size:22px;
 }
-.windows{
- display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
- padding:55px 13px 0;
+.roof-title{
+ position:absolute;top:48px;left:50%;transform:translateX(-50%);
+ color:#ffdc8b;font-size:12px;font-weight:bold;
+ white-space:nowrap;
+ background:#251a32;padding:7px 15px;border-radius:7px;
+ border:1px solid #a68ab8;z-index:2;
 }
-.window{
- height:48px;background:#ffda82;border:4px solid #352843;
- border-radius:7px;box-shadow:0 0 13px #ffca69;
+.attic{
+ background:#47344f;
+ border:5px solid #241a32;
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ min-height:145px;
 }
-.window.dark{background:#38344d;box-shadow:none}
-.door{
- position:absolute;bottom:0;left:50%;transform:translateX(-50%);
- height:65px;width:40px;background:#34263f;
- border:4px solid #211a32;border-radius:18px 18px 0 0;
+.floor{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ min-height:140px;
+ border:5px solid #251a32;
+ border-top:4px solid #251a32;
+ background:#382b46;
 }
-.door:after{content:"";position:absolute;right:5px;top:32px;width:5px;height:5px;background:#ffda82;border-radius:50%}
-.ground{position:absolute;bottom:0;height:17px;width:100%;background:#252039}
-.ghost{
- position:absolute;bottom:17px;right:18px;font-size:48px;
- animation:float 2s ease-in-out infinite;
- filter:drop-shadow(0 0 12px #d8c5ff);
+.floor-label{
+ grid-column:1/-1;
+ background:#281e35;
+ color:#ffdc8b;
+ text-align:center;
+ padding:6px;
+ font-size:11px;
+ font-weight:bold;
+ letter-spacing:2px;
 }
-@keyframes float{50%{transform:translateY(-12px)}}
-.scene-label{
- position:absolute;top:12px;left:12px;background:#19172dcc;
- padding:7px 10px;border-radius:10px;font-size:11px;
-}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px}
-.stat{background:#292541;border:1px solid #484064;border-radius:12px;padding:12px 5px;text-align:center}
-.stat b{display:block;color:#ffdc8a;font-size:17px}
-.stat span{font-size:10px;color:#c6bfdc}
-.section{padding:16px}
-.section-title{font-size:17px;font-weight:bold;margin-bottom:12px}
 .room{
- background:#292541;border:1px solid #484064;border-radius:13px;
- padding:13px;margin-bottom:10px;display:flex;align-items:center;gap:12px;
+ position:relative;
+ min-width:0;
+ min-height:115px;
+ overflow:hidden;
+ padding:9px 3px 5px;
+ text-align:center;
+ border:2px solid #2c2039;
+ background:linear-gradient(145deg,#765778,#4a3655);
+ cursor:pointer;
+ transition:filter .2s;
 }
-.room-icon{font-size:32px}
-.room-info{flex:1}
-.room-info b{font-size:13px}
-.room-info small{display:block;color:#b9b1d1;margin-top:5px;font-size:11px}
+.room:active{filter:brightness(1.3)}
+.room:nth-child(odd){background:linear-gradient(145deg,#665078,#42334f)}
+.room-name{
+ position:relative;z-index:2;
+ font-size:9px;font-weight:bold;color:#ffe7a5;
+ background:#30213d;padding:5px 2px;border-radius:5px;
+}
+.room-art{
+ font-size:32px;margin-top:9px;
+ display:block;animation:float 3s ease-in-out infinite;
+}
+.room-desc{font-size:9px;color:#e4d7ec;margin-top:5px}
+.room-level{
+ position:absolute;bottom:4px;right:4px;
+ background:#251b31;color:#ffe2a1;
+ padding:3px 5px;border-radius:5px;font-size:8px;
+}
+.mansion-base{height:12px;background:#20172d;border:3px solid #281c38}
+.floor-note{text-align:center;color:#bdaed0;font-size:10px;padding:9px}
+.collect{
+ display:block;width:calc(100% - 24px);margin:12px;
+ border:0;border-radius:13px;padding:17px;
+ background:linear-gradient(110deg,#a26bdf,#7052c5);
+ color:white;font-weight:bold;font-size:16px;
+ box-shadow:0 5px 0 #44336e;
+}
+.collect:active{transform:translateY(3px);box-shadow:none}
+.panel{display:none;padding:15px}
+.panel.active{display:block}
+.section-title{font-size:18px;color:#ffdc8b;font-weight:bold;margin:5px 0 15px}
+.item{
+ display:flex;align-items:center;gap:12px;
+ background:#302944;border:1px solid #524364;
+ border-radius:12px;padding:13px;margin-bottom:10px;
+}
+.item-icon{font-size:32px}
+.item-info{flex:1}
+.item-info b{font-size:13px}
+.item-info small{display:block;color:#c4b5d7;margin-top:5px;font-size:11px}
 .action{
- background:#8061cf;color:white;padding:10px 12px;border-radius:10px;
- font-size:11px;font-weight:bold;
+ background:linear-gradient(135deg,#a077df,#7659bf);
+ color:white;border:0;border-radius:9px;
+ padding:10px;font-size:11px;font-weight:bold;
 }
 .action:disabled{opacity:.4}
-.collect{
- display:block;width:calc(100% - 24px);margin:12px auto;
- padding:16px;background:linear-gradient(90deg,#a56be1,#6e59c8);
- color:white;border-radius:13px;font-weight:bold;font-size:15px;
- box-shadow:0 5px 0 #40356e;
-}
-.collect:active,.action:active{transform:scale(.97)}
 .nav{
  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
- width:100%;max-width:520px;display:grid;grid-template-columns:repeat(4,1fr);
- background:#211e36;border-top:1px solid #494064;padding:9px 4px;
- z-index:5;
+ width:100%;max-width:650px;
+ display:grid;grid-template-columns:repeat(4,1fr);
+ background:#211b34;border-top:2px solid #514269;
+ padding:9px 3px;z-index:30;
 }
-.nav button{background:none;color:#aaa2c6;font-size:10px;padding:5px}
+.nav button{border:0;background:none;color:#b9aecb;font-size:10px;padding:5px}
 .nav button span{display:block;font-size:22px;margin-bottom:4px}
-.nav button.active{color:#ffe09a}
-.panel{display:none}
-.panel.active{display:block}
-.message{
- position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
- background:#f0d58d;color:#302342;padding:12px 18px;
- border-radius:20px;font-size:12px;font-weight:bold;
- z-index:20;display:none;white-space:nowrap;
+.nav button.active{color:#ffdf92}
+.modal{
+ display:none;position:fixed;inset:0;background:#090715cc;
+ z-index:50;align-items:center;justify-content:center;padding:20px;
 }
-.shop-item{
- display:flex;align-items:center;gap:12px;
- background:#292541;border-radius:12px;padding:13px;margin-bottom:10px;
+.modal.show{display:flex}
+.modal-box{
+ background:#302641;border:2px solid #9b7ab0;
+ border-radius:18px;padding:22px;width:100%;max-width:360px;text-align:center;
 }
-.shop-item .info{flex:1}
-.shop-item small{display:block;color:#b9b1d1;margin-top:5px}
-.empty{text-align:center;padding:35px 15px;color:#c4bddf;line-height:1.7}
- 
-/* ===== HAUNTED EMPIRE GRAPHICS UPGRADE 1 ===== */
-
-.scene {
- background:
-  radial-gradient(ellipse at 80% 35%,#49436f 0%,transparent 35%),
-  linear-gradient(180deg,#171b3b 0%,#39345f 65%,#24213d 100%);
- box-shadow:0 12px 35px #09081780;
-}
-
-/* Distant haunted hills */
-.scene::before {
- content:"";
- position:absolute;
- bottom:17px;
- left:-5%;
- width:110%;
- height:110px;
- background:linear-gradient(180deg,#292747,#191a32);
- clip-path:polygon(0 60%,12% 25%,25% 55%,42% 12%,57% 50%,72% 20%,88% 53%,100% 30%,100% 100%,0 100%);
- z-index:0;
-}
-
-/* Atmospheric night fog */
-.scene::after {
- content:"";
- position:absolute;
- inset:0;
- pointer-events:none;
- background:
-  linear-gradient(180deg,transparent 55%,#aaa0e00c 100%);
- z-index:4;
-}
-
-.hotel {
- z-index:2;
- background:linear-gradient(90deg,#493858,#755783 45%,#554064);
- border:5px solid #30243f;
- box-shadow:
-  0 0 25px #a77bce30,
-  inset 0 0 25px #d9a5ff20;
-}
-
-/* Mansion chimney */
-.hotel::before {
- content:"";
- position:absolute;
- right:35px;
- top:-75px;
- width:25px;
- height:72px;
- background:linear-gradient(90deg,#45334f,#76577a,#49344e);
- border:4px solid #30243f;
- border-bottom:0;
- z-index:0;
-}
-
-/* Detailed roof */
-.roof {
- z-index:1;
- background:linear-gradient(135deg,#514063,#302440 70%);
- filter:drop-shadow(0 7px 5px #100c20aa);
-}
-
-.roof::after {
- content:"";
- position:absolute;
- left:15%;
- top:35px;
- width:70%;
- height:4px;
- background:#8d739d;
- opacity:.55;
-}
-
-/* Hotel sign */
-.sign {
- z-index:3;
- background:linear-gradient(135deg,#46304f,#241b35);
- border:1px solid #a58ab7;
- box-shadow:0 0 15px #d8b2ff30;
- letter-spacing:1px;
-}
-
-/* Beautiful glowing windows */
-.windows {
- position:relative;
- z-index:3;
-}
-
-.window {
- background:linear-gradient(135deg,#fff0ac,#ffc85e);
- border:5px solid #392b46;
- box-shadow:
-  0 0 8px #ffdc83,
-  0 0 22px #ffc85e88,
-  inset 0 0 12px #fff6cf;
- position:relative;
-}
-
-.window::after {
- content:"";
- position:absolute;
- top:0;
- left:50%;
- height:100%;
- width:3px;
- background:#9e714f;
- opacity:.65;
-}
-
-.window.dark {
- background:linear-gradient(135deg,#39344e,#25243a);
- box-shadow:inset 0 0 12px #171629;
-}
-
-/* Front entrance */
-.door {
- z-index:3;
- background:linear-gradient(90deg,#211a32,#49334f,#211a32);
- border:4px solid #21182f;
- box-shadow:0 0 15px #120d20;
-}
-
-.ground {
- z-index:3;
- background:linear-gradient(180deg,#29243f,#171528);
- box-shadow:0 -5px 20px #b49ad622;
-}
-
-/* Moonlight */
-.moon {
- animation:moonGlow 4s ease-in-out infinite;
- z-index:1;
-}
-
-@keyframes moonGlow {
- 50% {
-  box-shadow:0 0 45px #ffe8a2,0 0 75px #d6baff66;
- }
-}
-
-/* Floating ghost */
-.ghost {
- z-index:5;
- animation:ghostFloat 2.8s ease-in-out infinite;
- filter:drop-shadow(0 0 12px #d8c5ff);
-}
-
-@keyframes ghostFloat {
- 0%,100% {transform:translateY(0) rotate(-4deg)}
- 50% {transform:translateY(-15px) rotate(4deg)}
-}
-
-.scene-label {
- z-index:6;
- border:1px solid #74618e;
- box-shadow:0 3px 12px #09081766;
-}
-
-/* Better overall visual polish */
-.stat,.room,.shop-item {
- box-shadow:0 5px 15px #09081735;
-}
-
-.action {
- background:linear-gradient(135deg,#a17ae5,#7355bd);
- box-shadow:0 3px 0 #49366f;
-}
-
-.action:active {
- transform:translateY(2px);
- box-shadow:none;
-}
- 
-/* ===== HAUNTED EMPIRE OPEN MANSION ===== */
-
-.mansion-scene {
- min-height:390px;
- height:390px;
- background:
-  radial-gradient(ellipse at 50% 60%,#51426f 0%,transparent 65%),
-  linear-gradient(#171a38,#393257 75%,#242039);
- overflow:hidden;
-}
-
-.mansion {
- position:absolute;
- z-index:3;
- bottom:17px;
- left:5%;
- width:90%;
- height:285px;
- background:#30243f;
- border:5px solid #20182f;
- border-radius:10px 10px 0 0;
- box-shadow:0 0 25px #d19cff30;
- display:flex;
- flex-direction:column;
-}
-
-.mansion-roof {
- height:42px;
- flex-shrink:0;
- background:linear-gradient(#59416d,#392747);
- border-bottom:5px solid #241a35;
- position:relative;
- display:flex;
- justify-content:center;
- align-items:center;
-}
-
-.mansion-roof::before {
- content:"";
- position:absolute;
- top:-35px;
- left:-5%;
- width:110%;
- height:42px;
- background:#382746;
- clip-path:polygon(50% 0,100% 100%,0 100%);
-}
-
-.roof-sign {
- position:relative;
- z-index:2;
- color:#ffe18d;
- background:#291d37;
- border:1px solid #a88aba;
- border-radius:6px;
- padding:5px 14px;
- font-weight:bold;
- font-size:11px;
- letter-spacing:1px;
-}
-
-.floor {
- display:grid;
- grid-template-columns:repeat(3,minmax(0,1fr));
- flex:1;
- min-height:0;
- background:#72567a;
- border-bottom:5px solid #281d37;
-}
-
-.interior-room {
- position:relative;
- overflow:hidden;
- background:linear-gradient(145deg,#665076,#493652);
- border:3px solid #30243e;
- text-align:center;
-}
-
-.room-title {
- position:absolute;
- top:5px;
- left:3px;
- right:3px;
- text-align:center;
- font-size:8px;
- font-weight:bold;
- color:#ffe39a;
- background:#33243d;
- padding:4px 1px;
- border-radius:4px;
- z-index:2;
-}
-
-.room-furniture {
- position:absolute;
- bottom:17px;
- left:50%;
+.modal-art{font-size:55px}
+.modal-box h3{color:#ffdc8b}
+.modal-box p{color:#d0c2dd;font-size:13px;line-height:1.6}
+.modal-buttons{display:flex;gap:10px;justify-content:center}
+.modal-buttons button{flex:1}
+.toast{
+ display:none;position:fixed;bottom:95px;left:50%;
  transform:translateX(-50%);
- font-size:36px;
+ background:#ffe1a0;color:#30213d;
+ padding:12px 18px;border-radius:25px;
+ font-weight:bold;font-size:12px;z-index:60;
+ white-space:nowrap;
 }
-
-.room-guest {
- position:absolute;
- bottom:15px;
- right:3px;
- font-size:22px;
- animation:guestMove 3s ease-in-out infinite;
+@media(min-width:500px){
+ .room{min-height:135px}
+ .room-art{font-size:38px}
+ .room-name{font-size:11px}
 }
-
-.room-lamp {
- position:absolute;
- top:33px;
- right:6px;
- font-size:16px;
-}
-
-.ground-floor {
- grid-template-columns:1.35fr 1fr;
-}
-
-.reception {
- position:relative;
- overflow:hidden;
- background:linear-gradient(145deg,#463652,#685078);
- border-right:4px solid #30243e;
-}
-
-.receptionist {
- position:absolute;
- top:34px;
- left:50%;
- transform:translateX(-50%);
- font-size:37px;
- animation:ghostFloat 2.5s ease-in-out infinite;
-}
-
-.reception-desk {
- position:absolute;
- top:86px;
- left:8%;
- right:8%;
- height:34px;
- background:linear-gradient(#b77d58,#714638);
- border:3px solid #38253a;
- border-radius:8px 8px 3px 3px;
- display:flex;
- justify-content:center;
- align-items:center;
- color:#ffe7a2;
- font-size:8px;
- font-weight:bold;
-}
-
-.reception-customers {
- position:absolute;
- bottom:9px;
- width:100%;
- display:flex;
- justify-content:space-around;
- font-size:23px;
-}
-
-.lobby {
- position:relative;
- overflow:hidden;
- background:linear-gradient(135deg,#392c4c,#574366);
- text-align:center;
-}
-
-.lobby-ghost {
- position:absolute;
- top:36px;
- left:50%;
- transform:translateX(-50%);
- font-size:36px;
- animation:guestMove 2.7s infinite;
-}
-
-.lobby-decoration {
- position:absolute;
- bottom:40px;
- width:100%;
- font-size:14px;
-}
-
-.lobby-door {
- position:absolute;
- bottom:0;
- left:50%;
- transform:translateX(-50%);
- font-size:28px;
-}
-
-.mansion-base {
- height:8px;
- flex-shrink:0;
- background:#20182d;
-}
-
-.mansion-ground {
- position:absolute;
- z-index:2;
- bottom:0;
- left:0;
- width:100%;
- height:18px;
- background:#242039;
-}
-
-/* Spider webs */
-.web {
- position:absolute;
- z-index:7;
- font-size:30px;
-}
-
-.web-left {
- left:8px;
- top:50px;
-}
-
-.web-right {
- right:8px;
- top:100px;
-}
-
-/* Animated bats */
-.bat {
- position:absolute;
- z-index:8;
- font-size:23px;
-}
-
-.bat-one {
- top:75px;
- left:15%;
- animation:batFly 4s linear infinite;
-}
-
-.bat-two {
- top:120px;
- right:18%;
- animation:batFly 5s linear infinite reverse;
-}
-
-.bat-three {
- top:48px;
- left:65%;
- animation:batFly 6s linear infinite;
-}
-
-@keyframes batFly {
- 0% {transform:translateX(-20px) translateY(0) scale(.8)}
- 50% {transform:translateX(25px) translateY(-12px) scale(1.1)}
- 100% {transform:translateX(-20px) translateY(0) scale(.8)}
-}
-
-@keyframes guestMove {
- 0%,100% {transform:translateY(0)}
- 50% {transform:translateY(-5px)}
-}
-
-/* Small-screen adjustments */
-@media(max-width:380px) {
- .mansion {
-  left:3%;
-  width:94%;
- }
- .room-furniture {font-size:29px}
- .room-guest {font-size:19px}
- .reception-customers {font-size:19px}
-}
-
 </style>
 </head>
 
@@ -589,232 +206,293 @@ header{
 <header>
  <div>
   <div class="logo">👻 HAUNTED EMPIRE</div>
-  <div class="level">LEVEL <span id="level">1</span> · HOTEL OWNER</div>
+  <div class="sub">MANSION OWNER · LEVEL <span id="level">1</span></div>
  </div>
- <div class="coins">🪙 <span id="coins">500</span></div>
+ <div class="coin-pill">🪙 <span id="coins">500</span></div>
 </header>
 
-<div class="hero">
- <h1>WELCOME, OWNER!</h1>
- <p>Your haunted empire starts here.</p>
- <div style="font-size:11px;color:#d0c6ed">EXPERIENCE <span id="xpText">0 / 100</span></div>
- <div class="xpbar"><div id="xp"></div></div>
+<div class="dashboard">
+ <h2>WELCOME, OWNER!</h2>
+ <p>Build the greatest haunted mansion!</p>
+ <small>EXPERIENCE <span id="xpText">0 / 100</span></small>
+ <div class="progress"><div id="xpbar"></div></div>
 </div>
 
-<main>
-<!-- HOTEL -->
 <div id="hotelPanel" class="panel active">
- 
-<div class="scene mansion-scene">
+ <div class="stats">
+  <div class="stat"><b id="income">20</b><small>COINS / MIN</small></div>
+  <div class="stat"><b id="roomsCount">15</b><small>ROOMS</small></div>
+  <div class="stat"><b id="visitors">8</b><small>VISITORS</small></div>
+ </div>
 
+ <div class="scene-title">🏰 YOUR HAUNTED MANSION</div>
+
+ <div class="mansion-scene">
   <div class="moon"></div>
-  <div class="scene-label">🌙 THE HAUNTED INN</div>
+  <div class="star s1">✦</div>
+  <div class="star s2">✧</div>
+  <div class="star s3">✦</div>
+  <div class="bat b1">🦇</div>
+  <div class="bat b2">🦇</div>
+  <div class="bat b3">🦇</div>
 
-  <!-- Flying bats -->
-  <div class="bat bat-one">🦇</div>
-  <div class="bat bat-two">🦇</div>
-  <div class="bat bat-three">🦇</div>
-
-  <!-- Spider webs -->
-  <div class="web web-left">🕸️</div>
-  <div class="web web-right">🕸️</div>
-
-  <!-- Open front mansion -->
-  <div class="mansion">
-
-    <div class="mansion-roof">
-      <div class="roof-sign">THE GHOST INN</div>
-    </div>
-
-    <!-- Upper floor -->
-    <div class="floor upper-floor">
-
-      <div class="interior-room">
-        <div class="room-title">ROOM 01</div>
-        <div class="room-furniture">🛏️</div>
-        <div class="room-guest">🧛</div>
-        <div class="room-lamp">🕯️</div>
-      </div>
-
-      <div class="interior-room">
-        <div class="room-title">ROOM 02</div>
-        <div class="room-furniture">🛏️</div>
-        <div class="room-guest">👻</div>
-        <div class="room-lamp">🕯️</div>
-      </div>
-
-      <div class="interior-room">
-        <div class="room-title">ROOM 03</div>
-        <div class="room-furniture">🛋️</div>
-        <div class="room-guest">🧙</div>
-      </div>
-
-    </div>
-
-    <!-- Ground floor -->
-    <div class="floor ground-floor">
-
-      <div class="reception">
-        <div class="room-title">RECEPTION</div>
-        <div class="receptionist">👻</div>
-        <div class="reception-desk">
-          <span>GHOST HOTEL</span>
-        </div>
-        <div class="reception-customers">
-          <span>🧟</span>
-          <span>🧛</span>
-          <span>👨‍🦰</span>
-        </div>
-      </div>
-
-      <div class="lobby">
-        <div class="room-title">MAIN LOBBY</div>
-        <div class="lobby-ghost">👻</div>
-        <div class="lobby-decoration">🕯️ 🕷️ 🕯️</div>
-        <div class="lobby-door">🚪</div>
-      </div>
-
-    </div>
-
-    <div class="mansion-base"></div>
+  <!-- ATTIC -->
+  <div class="roof">
+   <div class="roof-details">
+    <span>🦇</span><span>👻</span><span>🧙</span>
+   </div>
+   <div class="roof-title">THE WITCH'S ATTIC</div>
   </div>
 
-  <div class="mansion-ground"></div>
-</div>
+  <div class="attic">
+   <div class="room" onclick="openRoom(0)">
+    <div class="room-name">MUMMY CHAMBER</div>
+    <span class="room-art">⚰️</span>
+    <div class="room-desc">Ancient secrets</div>
+    <span class="room-level" id="lv0">LV 1</span>
+   </div>
+   <div class="room" onclick="openRoom(1)">
+    <div class="room-name">WITCH'S STUDY</div>
+    <span class="room-art">🧙</span>
+    <div class="room-desc">Magic books</div>
+    <span class="room-level" id="lv1">LV 1</span>
+   </div>
+   <div class="room" onclick="openRoom(2)">
+    <div class="room-name">CLOCK ATTIC</div>
+    <span class="room-art">🕰️</span>
+    <div class="room-desc">Floating balloon 🎈</div>
+    <span class="room-level" id="lv2">LV 1</span>
+   </div>
+  </div>
 
+  <!-- FOURTH FLOOR -->
+  <div class="floor">
+   <div class="floor-label">FOURTH FLOOR</div>
+   <div class="room" onclick="openRoom(3)">
+    <div class="room-name">VAMPIRE BEDROOM</div>
+    <span class="room-art">🛏️</span>
+    <div class="room-desc">Red canopy bed</div>
+    <span class="room-level" id="lv3">LV 1</span>
+   </div>
+   <div class="room" onclick="openRoom(4)">
+    <div class="room-name">ARMOR HALL</div>
+    <span class="room-art">🛡️</span>
+    <div class="room-desc">Ancient armor</div>
+    <span class="room-level" id="lv4">LV 1</span>
+   </div>
+   <div class="room" onclick="openRoom(5)">
+    <div class="room-name">SPOOKY NURSERY</div>
+    <span class="room-art">🧸</span>
+    <div class="room-desc">Toys and books</div>
+    <span class="room-level" id="lv5">LV 1</span>
+   </div>
+  </div>
+
+  <!-- THIRD FLOOR -->
+  <div class="floor">
+   <div class="floor-label">THIRD FLOOR</div>
+   <div class="room" onclick="openRoom(6)">
+    <div class="room-name">VAMPIRE BATH</div>
+    <span class="room-art">🛁</span>
+    <div class="room-desc">Gothic mirror</div>
+    <span class="room-level" id="lv6">LV 1</span>
+   </div>
+   <div class="room" onclick="openRoom(7)">
+    <div class="room-name">MONSTER MUSIC</div>
+    <span class="room-art">🎸</span>
+    <div class="room-desc">Monster band</div>
+    <span class="room-level" id="lv7">LV 1</span>
+   </div>
+   <div class="room" onclick="openRoom(8)">
+    <div class="room-name">GHOST OFFICE</div>
+    <span class="room-art">👻</span>
+    <div class="room-desc">Workers on duty</div>
+    <span class="room-level" id="lv8">LV 1</span>
+   </div>
+  </div>
+
+  <!-- SECOND FLOOR -->
+  <div class="floor">
+   <div class="floor-label">SECOND FLOOR</div>
+   <div class="room" onclick="openRoom(9)">
+    <div class="room-name">MEDICAL LAB</div>
+    <span class="room-art">🧪</span>
+    <div class="room-desc">Strange experiments</div>
+    <span class="room-level" id="lv9">LV 1</span>
+   </div>
+   <div class="room" onclick="openRoom(10)">
+    <div class="room-name">MONSTER LOUNGE</div>
+    <span class="room-art">🎉</span>
+    <div class="room-desc">Party time!</div>
+    <span class="room-level" id="lv10">LV 1</span>
+   </div>
+   <div class="room" onclick="openRoom(11)">
+    <div class="room-name">DARK LIBRARY</div>
+    <span class="room-art">📚</span>
+    <div class="room-desc">Forbidden books</div>
+    <span class="room-level" id="lv11">LV 1</span>
+   </div>
+  </div>
+
+  <!-- GROUND FLOOR -->
+  <div class="floor">
+   <div class="floor-label">GROUND FLOOR</div>
+   <div class="room" onclick="openRoom(12)">
+    <div class="room-name">ALCHEMY LAB</div>
+    <span class="room-art">⚗️</span>
+    <div class="room-desc">Potions and cauldron</div>
+    <span class="room-level" id="lv12">LV 1</span>
+   </div>
+   <div class="room" onclick="openRoom(13)">
+    <div class="room-name">GRAND ENTRANCE</div>
+    <span class="room-art">💀</span>
+    <div class="room-desc">Mummy and skeleton</div>
+    <span class="room-level" id="lv13">LV 1</span>
+   </div>
+   <div class="room" onclick="openRoom(14)">
+    <div class="room-name">DINING HALL</div>
+    <span class="room-art">🍽️</span>
+    <div class="room-desc">Candlelit dinner</div>
+    <span class="room-level" id="lv14">LV 1</span>
+   </div>
+  </div>
+  <div class="mansion-base"></div>
+  <div class="floor-note">🕸️ A home for the strange and supernatural 🕸️</div>
+ </div>
 
  <div class="stats">
-  <div class="stat"><b id="income">5</b><span>COINS / MIN</span></div>
-  <div class="stat"><b id="roomsCount">1</b><span>ROOMS</span></div>
-  <div class="stat"><b id="visitors">3</b><span>VISITORS</span></div>
+  <div class="stat"><b id="owned">15</b><small>ROOMS OWNED</small></div>
+  <div class="stat"><b id="totalUpgrades">0</b><small>UPGRADES</small></div>
+  <div class="stat"><b id="totalEarned">0</b><small>COINS EARNED</small></div>
  </div>
 
- <button class="collect" onclick="collectCoins()">🪙 COLLECT HOTEL INCOME</button>
-
- <div class="section">
-  <div class="section-title">🏨 YOUR HOTEL ROOMS</div>
-  <div id="rooms"></div>
- </div>
+ <button class="collect" onclick="collect()">🪙 COLLECT MANSION INCOME</button>
 </div>
 
 <!-- SHOP -->
 <div id="shopPanel" class="panel">
- <div class="section">
-  <div class="section-title">🛍️ HAUNTED SHOP</div>
-  <p style="font-size:12px;color:#c4bddf">Give your hotel a powerful upgrade.</p>
-  <div id="shopItems"></div>
- </div>
+ <div class="section-title">🛍️ MANSION SHOP</div>
+ <div id="shopItems"></div>
 </div>
 
 <!-- QUESTS -->
 <div id="questPanel" class="panel">
- <div class="section">
-  <div class="section-title">📜 OWNER'S QUESTS</div>
-  <div class="room">
-   <div class="room-icon">🪙</div>
-   <div class="room-info"><b>First Fortune</b><small>Collect hotel income.</small></div>
-   <span id="quest1">0/1</span>
-  </div>
-  <div class="room">
-   <div class="room-icon">🛏️</div>
-   <div class="room-info"><b>Growing Business</b><small>Upgrade a hotel room.</small></div>
-   <span id="quest2">0/1</span>
-  </div>
-  <div class="room">
-   <div class="room-icon">🏨</div>
-   <div class="room-info"><b>Room Expansion</b><small>Unlock a second room.</small></div>
-   <span id="quest3">0/1</span>
-  </div>
-  <p style="font-size:11px;color:#bdb4d5">More quests and rewards are coming in future updates!</p>
- </div>
+ <div class="section-title">📜 MANSION QUESTS</div>
+ <div id="quests"></div>
 </div>
 
 <!-- PROFILE -->
 <div id="profilePanel" class="panel">
- <div class="section">
-  <div class="section-title">👑 YOUR EMPIRE</div>
-  <div class="room">
-   <div class="room-icon">👻</div>
-   <div class="room-info"><b>Hotel Owner</b><small>Founder of The Ghost Inn</small></div>
-  </div>
-  <div class="room">
-   <div class="room-info"><b>Player Level</b><small>Your current experience level</small></div>
-   <b id="profileLevel">1</b>
-  </div>
-  <div class="room">
-   <div class="room-info"><b>Total Coins</b><small>Your current fortune</small></div>
-   <b id="profileCoins">500</b>
-  </div>
-  <div class="room">
-   <div class="room-info"><b>Total Rooms</b><small>Rooms in your hotel</small></div>
-   <b id="profileRooms">1</b>
-  </div>
-  <button class="action" onclick="resetGame()" style="margin-top:15px;background:#9b405e">RESET GAME</button>
- </div>
+ <div class="section-title">👑 YOUR EMPIRE</div>
+ <div class="item"><div class="item-icon">👻</div><div class="item-info"><b>Mansion Owner</b><small>Master of the supernatural</small></div></div>
+ <div class="item"><div class="item-info"><b>Player level</b></div><b id="pLevel">1</b></div>
+ <div class="item"><div class="item-info"><b>Current coins</b></div><b id="pCoins">500</b></div>
+ <div class="item"><div class="item-info"><b>Total rooms</b></div><b>15</b></div>
+ <div class="item"><div class="item-info"><b>Lifetime coins earned</b></div><b id="pEarned">0</b></div>
+ <button class="action" onclick="resetGame()" style="background:#a34460">RESET GAME</button>
 </div>
-</main>
 
 <nav class="nav">
- <button class="active" onclick="showPanel('hotelPanel',this)"><span>🏨</span>HOTEL</button>
- <button onclick="showPanel('shopPanel',this)"><span>🛍️</span>SHOP</button>
- <button onclick="showPanel('questPanel',this)"><span>📜</span>QUESTS</button>
- <button onclick="showPanel('profilePanel',this)"><span>👑</span>PROFILE</button>
+ <button class="active" onclick="showPanel('hotelPanel',this)"><span>🏰</span> MANSION</button>
+ <button onclick="showPanel('shopPanel',this)"><span>🛍️</span> SHOP</button>
+ <button onclick="showPanel('questPanel',this)"><span>📜</span> QUESTS</button>
+ <button onclick="showPanel('profilePanel',this)"><span>👑</span> PROFILE</button>
 </nav>
 
-<div class="message" id="message"></div>
+<div class="modal" id="roomModal">
+ <div class="modal-box">
+  <div class="modal-art" id="modalArt">👻</div>
+  <h3 id="modalName">Room</h3>
+  <p id="modalDescription">Room information</p>
+  <p>LEVEL: <b id="modalLevel">1</b></p>
+  <p>UPGRADE COST: <b id="modalCost">100</b> 🪙</p>
+  <div class="modal-buttons">
+   <button class="action" onclick="upgradeRoom()">⬆ UPGRADE</button>
+   <button class="action" style="background:#65556f" onclick="closeModal()">CLOSE</button>
+  </div>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
 </div>
 
 <script>
-const SAVE_KEY="hauntedEmpireSave_v1";
+const KEY="hauntedEmpire_v2";
+
+const roomData=[
+ ["Mummy Chamber","⚰️","An ancient chamber filled with forgotten secrets.",8],
+ ["Witch's Study","🧙","A magical study full of books and mysterious objects.",10],
+ ["Clock Attic","🕰️","A strange attic with a floating red balloon.",8],
+ ["Vampire Bedroom","🛏️","A luxurious bedroom with a red canopy bed.",9],
+ ["Armor Hall","🛡️","An ancient hallway guarded by enchanted armor.",7],
+ ["Spooky Nursery","🧸","A mysterious nursery full of toys and books.",8],
+ ["Vampire Bathroom","🛁","A gothic bathroom with an enormous mirror.",8],
+ ["Monster Music Studio","🎸","A lively studio for supernatural musicians.",12],
+ ["Ghost Office","👻","The hardworking employees of the mansion.",10],
+ ["Medical Laboratory","🧪","A strange laboratory with mysterious equipment.",11],
+ ["Monster Lounge","🎉","A gathering place for the mansion's guests.",12],
+ ["Dark Library","📚","A library containing forbidden knowledge.",10],
+ ["Alchemy Laboratory","⚗️","Potion bottles, bubbling cauldrons and experiments.",12],
+ ["Grand Entrance","💀","The main entrance guarded by skeletons.",8],
+ ["Dining Hall","🍽️","A candlelit dining hall for monster guests.",10]
+];
+
+const shopData=[
+ {name:"Golden Candles",icon:"🕯️",description:"Increase mansion income.",cost:150,bonus:2},
+ {name:"Ghost Servants",icon:"👻",description:"Hire supernatural helpers.",cost:300,bonus:5},
+ {name:"Magic Decoration",icon:"🔮",description:"Decorate your mansion with magic.",cost:500,bonus:9},
+ {name:"Royal Furniture",icon:"🪑",description:"Luxury furniture for your guests.",cost:800,bonus:15}
+];
 
 let state={
- coins:500,
- xp:0,
- level:1,
- rooms:[{name:"Ghost Bedroom",icon:"🛏️",level:1,base:5}],
- visitors:3,
+ coins:500,xp:0,level:1,
+ rooms:Array(15).fill(1),
+ bonus:0,visitors:8,
+ earned:0,upgrades:0,
  collected:0,
- upgraded:false,
+ purchases:[],
  lastTime:Date.now()
 };
 
-function loadGame(){
+let selectedRoom=null;
+
+function income(){
+ return roomData.reduce((total,r,i)=>total+r[3]*state.rooms[i],0)+state.bonus;
+}
+
+function save(){
+ state.lastTime=Date.now();
+ try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+}
+
+function load(){
  try{
-  const saved=localStorage.getItem(SAVE_KEY);
-  if(saved){
-   const data=JSON.parse(saved);
-   if(data && typeof data.coins==="number" && Array.isArray(data.rooms)){
+  const raw=localStorage.getItem(KEY);
+  if(raw){
+   const data=JSON.parse(raw);
+   if(data && Array.isArray(data.rooms) && data.rooms.length===15 && typeof data.coins==="number"){
     state={...state,...data};
    }
   }
- }catch(e){console.log("Save could not be loaded",e)}
+ }catch(e){}
  const elapsed=Math.max(0,Math.min(43200,(Date.now()-state.lastTime)/1000));
- const offline=Math.floor(elapsed/60)*getIncome();
+ const offline=Math.floor(elapsed/60)*income();
  if(offline>0){
   state.coins+=offline;
-  notify("Welcome back! You earned "+offline+" offline coins!");
+  state.earned+=offline;
  }
  state.lastTime=Date.now();
  render();
- saveGame();
+ save();
+ if(offline>0)toast("Welcome back! +"+offline+" coins");
 }
 
-function saveGame(){
- state.lastTime=Date.now();
- try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}
- catch(e){console.log("Saving unavailable",e)}
-}
-
-function getIncome(){
- return state.rooms.reduce((sum,r)=>sum+(r.level*r.base),0);
-}
-
-function notify(message){
- const box=document.getElementById("message");
- box.textContent=message;
- box.style.display="block";
- clearTimeout(window.messageTimer);
- window.messageTimer=setTimeout(()=>box.style.display="none",2300);
+function toast(message){
+ const t=document.getElementById("toast");
+ t.textContent=message;
+ t.style.display="block";
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>t.style.display="none",2200);
 }
 
 function addXP(amount){
@@ -822,76 +500,68 @@ function addXP(amount){
  while(state.xp>=state.level*100){
   state.xp-=state.level*100;
   state.level++;
-  notify("🎉 LEVEL UP! You reached level "+state.level);
+  toast("🎉 LEVEL UP! Level "+state.level);
  }
 }
 
-function collectCoins(){
- const amount=getIncome()*5;
+function collect(){
+ const amount=income()*5;
  state.coins+=amount;
+ state.earned+=amount;
  state.collected++;
- addXP(10);
- render();
- saveGame();
- notify("🪙 You collected "+amount+" coins!");
+ addXP(15);
+ render();save();
+ toast("🪙 Collected "+amount+" coins!");
 }
 
-function upgradeRoom(index){
- const room=state.rooms[index];
- const cost=room.level*100;
+function openRoom(index){
+ selectedRoom=index;
+ const r=roomData[index];
+ const level=state.rooms[index];
+ document.getElementById("modalArt").textContent=r[1];
+ document.getElementById("modalName").textContent=r[0];
+ document.getElementById("modalDescription").textContent=r[2];
+ document.getElementById("modalLevel").textContent=level;
+ document.getElementById("modalCost").textContent=level*100;
+ document.getElementById("roomModal").classList.add("show");
+}
+
+function closeModal(){
+ document.getElementById("roomModal").classList.remove("show");
+}
+
+function upgradeRoom(){
+ if(selectedRoom===null)return;
+ const cost=state.rooms[selectedRoom]*100;
  if(state.coins<cost){
-  notify("Not enough coins!");
+  toast("Not enough coins!");
   return;
  }
  state.coins-=cost;
- room.level++;
- state.upgraded=true;
+ state.rooms[selectedRoom]++;
+ state.upgrades++;
  addXP(20);
- render();
- saveGame();
- notify(room.name+" upgraded to level "+room.level+"!");
+ closeModal();
+ render();save();
+ toast("Room upgraded successfully!");
 }
 
-function unlockRoom(){
- const cost=500+((state.rooms.length-1)*500);
- if(state.coins<cost){
-  notify("You need "+cost+" coins!");
+function buy(index){
+ const item=shopData[index];
+ if(state.purchases.includes(index)){
+  toast("Already purchased!");
   return;
  }
- state.coins-=cost;
- const choices=[
-  {name:"Moonlight Suite",icon:"🌙",base:8},
-  {name:"Vampire Chamber",icon:"🧛",base:12},
-  {name:"Witch's Room",icon:"🧙",base:18},
-  {name:"Phantom Lounge",icon:"👻",base:25}
- ];
- const next=choices[(state.rooms.length-1)%choices.length];
- state.rooms.push({...next,level:1});
- state.visitors+=2;
- addXP(35);
- render();
- saveGame();
- notify("New room unlocked: "+next.name+"!");
-}
-
-const shop=[
- {name:"Golden Lantern",icon:"🏮",description:"A beautiful hotel decoration.",cost:150},
- {name:"Friendly Ghost",icon:"👻",description:"A cute companion for your hotel.",cost:300},
- {name:"Magic Carpet",icon:"🪄",description:"Give your hotel some magic.",cost:450}
-];
-
-function buyItem(index){
- const item=shop[index];
  if(state.coins<item.cost){
-  notify("Not enough coins!");
+  toast("Not enough coins!");
   return;
  }
  state.coins-=item.cost;
- item.cost=Math.floor(item.cost*1.5);
- addXP(10);
- render();
- saveGame();
- notify("You purchased "+item.name+"!");
+ state.bonus+=item.bonus;
+ state.purchases.push(index);
+ addXP(20);
+ render();save();
+ toast(item.name+" purchased!");
 }
 
 function showPanel(id,button){
@@ -904,65 +574,63 @@ function showPanel(id,button){
 function render(){
  document.getElementById("coins").textContent=Math.floor(state.coins);
  document.getElementById("level").textContent=state.level;
- document.getElementById("income").textContent=getIncome();
- document.getElementById("roomsCount").textContent=state.rooms.length;
+ document.getElementById("income").textContent=income();
  document.getElementById("visitors").textContent=state.visitors;
+ document.getElementById("roomsCount").textContent=15;
+ document.getElementById("owned").textContent=15;
+ document.getElementById("totalUpgrades").textContent=state.upgrades;
+ document.getElementById("totalEarned").textContent=state.earned;
+ document.getElementById("pLevel").textContent=state.level;
+ document.getElementById("pCoins").textContent=Math.floor(state.coins);
+ document.getElementById("pEarned").textContent=state.earned;
  document.getElementById("xpText").textContent=state.xp+" / "+(state.level*100);
- document.getElementById("xp").style.width=(state.xp/(state.level*100)*100)+"%";
+ document.getElementById("xpbar").style.width=(state.xp/(state.level*100)*100)+"%";
 
- document.getElementById("profileLevel").textContent=state.level;
- document.getElementById("profileCoins").textContent=Math.floor(state.coins);
- document.getElementById("profileRooms").textContent=state.rooms.length;
+ state.rooms.forEach((level,i)=>{
+  const el=document.getElementById("lv"+i);
+  if(el)el.textContent="LV "+level;
+ });
 
- document.getElementById("quest1").textContent=state.collected>0?"1/1":"0/1";
- document.getElementById("quest2").textContent=state.upgraded?"1/1":"0/1";
- document.getElementById("quest3").textContent=state.rooms.length>1?"1/1":"0/1";
-
- document.getElementById("rooms").innerHTML=
- state.rooms.map((r,i)=>{
-  const cost=r.level*100;
-  return `<div class="room">
-   <div class="room-icon">${r.icon}</div>
-   <div class="room-info">
-    <b>${r.name}</b>
-    <small>Level ${r.level} · ${r.level*r.base} coins/min</small>
-   </div>
-   <button class="action" onclick="upgradeRoom(${i})">⬆ ${cost}</button>
+ document.getElementById("shopItems").innerHTML=shopData.map((item,i)=>{
+  const bought=state.purchases.includes(i);
+  return `<div class="item">
+   <div class="item-icon">${item.icon}</div>
+   <div class="item-info"><b>${item.name}</b><small>${item.description} +${item.bonus} coins/min</small></div>
+   <button class="action" onclick="buy(${i})" ${bought?"disabled":""}>${bought?"OWNED":"🪙 "+item.cost}</button>
   </div>`;
- }).join("")+
- `<div class="room">
-  <div class="room-icon">➕</div>
-  <div class="room-info">
-   <b>Build New Room</b>
-   <small>Expand your haunted hotel</small>
-  </div>
-  <button class="action" onclick="unlockRoom()">BUILD ${500+(state.rooms.length-1)*500}</button>
- </div>`;
+ }).join("");
 
- document.getElementById("shopItems").innerHTML=shop.map((item,i)=>
- `<div class="shop-item">
-  <div style="font-size:30px">${item.icon}</div>
-  <div class="info"><b>${item.name}</b><small>${item.description}</small></div>
-  <button class="action" onclick="buyItem(${i})">🪙 ${item.cost}</button>
+ const quests=[
+  ["Collect your first income","Collect hotel income",state.collected>0],
+  ["Improve a room","Upgrade any room",state.upgrades>0],
+  ["Hire the ghost servants","Purchase ghost servants",state.purchases.includes(1)],
+  ["Become a mansion legend","Reach level 5",state.level>=5]
+ ];
+ document.getElementById("quests").innerHTML=quests.map(q=>
+ `<div class="item">
+  <div class="item-icon">${q[2]?"✅":"📜"}</div>
+  <div class="item-info"><b>${q[0]}</b><small>${q[1]}</small></div>
+  <b style="color:${q[2]?"#a5e9a9":"#e4c77e"}">${q[2]?"DONE":"ACTIVE"}</b>
  </div>`).join("");
 }
 
 function resetGame(){
- if(!confirm("Are you sure you want to reset all your progress?"))return;
- localStorage.removeItem(SAVE_KEY);
+ if(!confirm("Reset your entire mansion and start again?"))return;
+ localStorage.removeItem(KEY);
  location.reload();
 }
 
-loadGame();
+load();
 
 setInterval(()=>{
- const income=getIncome();
- state.coins+=income/60;
+ const amount=income()/60;
+ state.coins+=amount;
+ state.earned+=amount;
  render();
- saveGame();
 },1000);
 
-window.addEventListener("beforeunload",saveGame);
+setInterval(save,10000);
+window.addEventListener("beforeunload",save);
 </script>
 </body>
 </html>
