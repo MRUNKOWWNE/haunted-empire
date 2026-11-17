@@ -1,1 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#17142b">
+<title>HAUNTED EMPIRE</title>
 
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#100f20;color:white;
+ font-family:Arial,sans-serif;
+ min-height:100vh;
+}
+button{font:inherit;cursor:pointer;border:0}
+#game{max-width:520px;margin:auto;min-height:100vh;background:#19172d;padding-bottom:85px;overflow:hidden;position:relative}
+header{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:15px;background:#24203e;border-bottom:2px solid #393158;
+}
+.logo{font-weight:1000;font-size:19px;color:#f3d67c}
+.level{font-size:12px;color:#c5bde8;margin-top:4px}
+.coins{background:#332b4e;padding:10px 13px;border-radius:20px;color:#ffe28b;font-weight:bold}
+.hero{
+ padding:22px 16px 15px;text-align:center;
+ background:linear-gradient(#28234c,#17152c);
+}
+.hero h1{font-size:25px;margin:0;color:#f8d985}
+.hero p{font-size:12px;color:#c4bddf;margin:7px 0}
+.xpbar{height:8px;background:#423b5d;border-radius:20px;margin:12px auto;width:75%;overflow:hidden}
+#xp{height:100%;width:0;background:#a98cff;transition:.3s}
+.scene{
+ margin:12px;background:linear-gradient(#25264d 0%,#39345f 58%,#24213d 59%);
+ border:2px solid #554b77;border-radius:18px;
+ min-height:285px;position:relative;overflow:hidden;
+}
+.moon{
+ position:absolute;right:35px;top:24px;width:48px;height:48px;
+ background:#ffe8a2;border-radius:50%;box-shadow:0 0 28px #ffe8a2;
+}
+.stars{position:absolute;inset:0;color:#fff6b8;font-size:13px;letter-spacing:20px;line-height:35px;opacity:.8}
+.hotel{
+ position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+ width:76%;height:205px;background:#665078;
+ border:4px solid #30243e;border-bottom:0;
+ border-radius:8px 8px 0 0;
+}
+.roof{
+ position:absolute;top:-42px;left:-10px;width:calc(100% + 20px);
+ height:55px;background:#382d53;
+ clip-path:polygon(50% 0,100% 100%,0 100%);
+}
+.sign{
+ position:absolute;top:15px;left:50%;transform:translateX(-50%);
+ color:#ffe4a0;font-weight:1000;font-size:12px;
+ white-space:nowrap;background:#342541;padding:6px 10px;border-radius:5px;
+}
+.windows{
+ display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+ padding:55px 13px 0;
+}
+.window{
+ height:48px;background:#ffda82;border:4px solid #352843;
+ border-radius:7px;box-shadow:0 0 13px #ffca69;
+}
+.window.dark{background:#38344d;box-shadow:none}
+.door{
+ position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+ height:65px;width:40px;background:#34263f;
+ border:4px solid #211a32;border-radius:18px 18px 0 0;
+}
+.door:after{content:"";position:absolute;right:5px;top:32px;width:5px;height:5px;background:#ffda82;border-radius:50%}
+.ground{position:absolute;bottom:0;height:17px;width:100%;background:#252039}
+.ghost{
+ position:absolute;bottom:17px;right:18px;font-size:48px;
+ animation:float 2s ease-in-out infinite;
+ filter:drop-shadow(0 0 12px #d8c5ff);
+}
+@keyframes float{50%{transform:translateY(-12px)}}
+.scene-label{
+ position:absolute;top:12px;left:12px;background:#19172dcc;
+ padding:7px 10px;border-radius:10px;font-size:11px;
+}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px}
+.stat{background:#292541;border:1px solid #484064;border-radius:12px;padding:12px 5px;text-align:center}
+.stat b{display:block;color:#ffdc8a;font-size:17px}
+.stat span{font-size:10px;color:#c6bfdc}
+.section{padding:16px}
+.section-title{font-size:17px;font-weight:bold;margin-bottom:12px}
+.room{
+ background:#292541;border:1px solid #484064;border-radius:13px;
+ padding:13px;margin-bottom:10px;display:flex;align-items:center;gap:12px;
+}
+.room-icon{font-size:32px}
+.room-info{flex:1}
+.room-info b{font-size:13px}
+.room-info small{display:block;color:#b9b1d1;margin-top:5px;font-size:11px}
+.action{
+ background:#8061cf;color:white;padding:10px 12px;border-radius:10px;
+ font-size:11px;font-weight:bold;
+}
+.action:disabled{opacity:.4}
+.collect{
+ display:block;width:calc(100% - 24px);margin:12px auto;
+ padding:16px;background:linear-gradient(90deg,#a56be1,#6e59c8);
+ color:white;border-radius:13px;font-weight:bold;font-size:15px;
+ box-shadow:0 5px 0 #40356e;
+}
+.collect:active,.action:active{transform:scale(.97)}
+.nav{
+ position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+ width:100%;max-width:520px;display:grid;grid-template-columns:repeat(4,1fr);
+ background:#211e36;border-top:1px solid #494064;padding:9px 4px;
+ z-index:5;
+}
+.nav button{background:none;color:#aaa2c6;font-size:10px;padding:5px}
+.nav button span{display:block;font-size:22px;margin-bottom:4px}
+.nav button.active{color:#ffe09a}
+.panel{display:none}
+.panel.active{display:block}
+.message{
+ position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+ background:#f0d58d;color:#302342;padding:12px 18px;
+ border-radius:20px;font-size:12px;font-weight:bold;
+ z-index:20;display:none;white-space:nowrap;
+}
+.shop-item{
+ display:flex;align-items:center;gap:12px;
+ background:#292541;border-radius:12px;padding:13px;margin-bottom:10px;
+}
+.shop-item .info{flex:1}
+.shop-item small{display:block;color:#b9b1d1;margin-top:5px}
+.empty{text-align:center;padding:35px 15px;color:#c4bddf;line-height:1.7}
+</style>
+</head>
+
+<body>
+<div id="game">
+
+<header>
+ <div>
+  <div class="logo">👻 HAUNTED EMPIRE</div>
+  <div class="level">LEVEL <span id="level">1</span> · HOTEL OWNER</div>
+ </div>
+ <div class="coins">🪙 <span id="coins">500</span></div>
+</header>
+
+<div class="hero">
+ <h1>WELCOME, OWNER!</h1>
+ <p>Your haunted empire starts here.</p>
+ <div style="font-size:11px;color:#d0c6ed">EXPERIENCE <span id="xpText">0 / 100</span></div>
+ <div class="xpbar"><div id="xp"></div></div>
+</div>
+
+<main>
+<!-- HOTEL -->
+<div id="hotelPanel" class="panel active">
+ <div class="scene">
+  <div class="moon"></div>
+  <div class="stars">✦　　✧　　✦<br>　✧　　✦　　✧</div>
+  <div class="scene-label">🌙 NIGHT AT YOUR HOTEL</div>
+  <div class="hotel">
+   <div class="roof"></div>
+   <div class="sign">THE GHOST INN</div>
+   <div class="windows">
+    <div class="window"></div>
+    <div class="window dark"></div>
+    <div class="window"></div>
+    <div class="window"></div>
+    <div class="window"></div>
+    <div class="window dark"></div>
+   </div>
+   <div class="door"></div>
+  </div>
+  <div class="ground"></div>
+  <div class="ghost">👻</div>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><b id="income">5</b><span>COINS / MIN</span></div>
+  <div class="stat"><b id="roomsCount">1</b><span>ROOMS</span></div>
+  <div class="stat"><b id="visitors">3</b><span>VISITORS</span></div>
+ </div>
+
+ <button class="collect" onclick="collectCoins()">🪙 COLLECT HOTEL INCOME</button>
+
+ <div class="section">
+  <div class="section-title">🏨 YOUR HOTEL ROOMS</div>
+  <div id="rooms"></div>
+ </div>
+</div>
+
+<!-- SHOP -->
+<div id="shopPanel" class="panel">
+ <div class="section">
+  <div class="section-title">🛍️ HAUNTED SHOP</div>
+  <p style="font-size:12px;color:#c4bddf">Give your hotel a powerful upgrade.</p>
+  <div id="shopItems"></div>
+ </div>
+</div>
+
+<!-- QUESTS -->
+<div id="questPanel" class="panel">
+ <div class="section">
+  <div class="section-title">📜 OWNER'S QUESTS</div>
+  <div class="room">
+   <div class="room-icon">🪙</div>
+   <div class="room-info"><b>First Fortune</b><small>Collect hotel income.</small></div>
+   <span id="quest1">0/1</span>
+  </div>
+  <div class="room">
+   <div class="room-icon">🛏️</div>
+   <div class="room-info"><b>Growing Business</b><small>Upgrade a hotel room.</small></div>
+   <span id="quest2">0/1</span>
+  </div>
+  <div class="room">
+   <div class="room-icon">🏨</div>
+   <div class="room-info"><b>Room Expansion</b><small>Unlock a second room.</small></div>
+   <span id="quest3">0/1</span>
+  </div>
+  <p style="font-size:11px;color:#bdb4d5">More quests and rewards are coming in future updates!</p>
+ </div>
+</div>
+
+<!-- PROFILE -->
+<div id="profilePanel" class="panel">
+ <div class="section">
+  <div class="section-title">👑 YOUR EMPIRE</div>
+  <div class="room">
+   <div class="room-icon">👻</div>
+   <div class="room-info"><b>Hotel Owner</b><small>Founder of The Ghost Inn</small></div>
+  </div>
+  <div class="room">
+   <div class="room-info"><b>Player Level</b><small>Your current experience level</small></div>
+   <b id="profileLevel">1</b>
+  </div>
+  <div class="room">
+   <div class="room-info"><b>Total Coins</b><small>Your current fortune</small></div>
+   <b id="profileCoins">500</b>
+  </div>
+  <div class="room">
+   <div class="room-info"><b>Total Rooms</b><small>Rooms in your hotel</small></div>
+   <b id="profileRooms">1</b>
+  </div>
+  <button class="action" onclick="resetGame()" style="margin-top:15px;background:#9b405e">RESET GAME</button>
+ </div>
+</div>
+</main>
+
+<nav class="nav">
+ <button class="active" onclick="showPanel('hotelPanel',this)"><span>🏨</span>HOTEL</button>
+ <button onclick="showPanel('shopPanel',this)"><span>🛍️</span>SHOP</button>
+ <button onclick="showPanel('questPanel',this)"><span>📜</span>QUESTS</button>
+ <button onclick="showPanel('profilePanel',this)"><span>👑</span>PROFILE</button>
+</nav>
+
+<div class="message" id="message"></div>
+</div>
+
+<script>
+const SAVE_KEY="hauntedEmpireSave_v1";
+
+let state={
+ coins:500,
+ xp:0,
+ level:1,
+ rooms:[{name:"Ghost Bedroom",icon:"🛏️",level:1,base:5}],
+ visitors:3,
+ collected:0,
+ upgraded:false,
+ lastTime:Date.now()
+};
+
+function loadGame(){
+ try{
+  const saved=localStorage.getItem(SAVE_KEY);
+  if(saved){
+   const data=JSON.parse(saved);
+   if(data && typeof data.coins==="number" && Array.isArray(data.rooms)){
+    state={...state,...data};
+   }
+  }
+ }catch(e){console.log("Save could not be loaded",e)}
+ const elapsed=Math.max(0,Math.min(43200,(Date.now()-state.lastTime)/1000));
+ const offline=Math.floor(elapsed/60)*getIncome();
+ if(offline>0){
+  state.coins+=offline;
+  notify("Welcome back! You earned "+offline+" offline coins!");
+ }
+ state.lastTime=Date.now();
+ render();
+ saveGame();
+}
+
+function saveGame(){
+ state.lastTime=Date.now();
+ try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}
+ catch(e){console.log("Saving unavailable",e)}
+}
+
+function getIncome(){
+ return state.rooms.reduce((sum,r)=>sum+(r.level*r.base),0);
+}
+
+function notify(message){
+ const box=document.getElementById("message");
+ box.textContent=message;
+ box.style.display="block";
+ clearTimeout(window.messageTimer);
+ window.messageTimer=setTimeout(()=>box.style.display="none",2300);
+}
+
+function addXP(amount){
+ state.xp+=amount;
+ while(state.xp>=state.level*100){
+  state.xp-=state.level*100;
+  state.level++;
+  notify("🎉 LEVEL UP! You reached level "+state.level);
+ }
+}
+
+function collectCoins(){
+ const amount=getIncome()*5;
+ state.coins+=amount;
+ state.collected++;
+ addXP(10);
+ render();
+ saveGame();
+ notify("🪙 You collected "+amount+" coins!");
+}
+
+function upgradeRoom(index){
+ const room=state.rooms[index];
+ const cost=room.level*100;
+ if(state.coins<cost){
+  notify("Not enough coins!");
+  return;
+ }
+ state.coins-=cost;
+ room.level++;
+ state.upgraded=true;
+ addXP(20);
+ render();
+ saveGame();
+ notify(room.name+" upgraded to level "+room.level+"!");
+}
+
+function unlockRoom(){
+ const cost=500+((state.rooms.length-1)*500);
+ if(state.coins<cost){
+  notify("You need "+cost+" coins!");
+  return;
+ }
+ state.coins-=cost;
+ const choices=[
+  {name:"Moonlight Suite",icon:"🌙",base:8},
+  {name:"Vampire Chamber",icon:"🧛",base:12},
+  {name:"Witch's Room",icon:"🧙",base:18},
+  {name:"Phantom Lounge",icon:"👻",base:25}
+ ];
+ const next=choices[(state.rooms.length-1)%choices.length];
+ state.rooms.push({...next,level:1});
+ state.visitors+=2;
+ addXP(35);
+ render();
+ saveGame();
+ notify("New room unlocked: "+next.name+"!");
+}
+
+const shop=[
+ {name:"Golden Lantern",icon:"🏮",description:"A beautiful hotel decoration.",cost:150},
+ {name:"Friendly Ghost",icon:"👻",description:"A cute companion for your hotel.",cost:300},
+ {name:"Magic Carpet",icon:"🪄",description:"Give your hotel some magic.",cost:450}
+];
+
+function buyItem(index){
+ const item=shop[index];
+ if(state.coins<item.cost){
+  notify("Not enough coins!");
+  return;
+ }
+ state.coins-=item.cost;
+ item.cost=Math.floor(item.cost*1.5);
+ addXP(10);
+ render();
+ saveGame();
+ notify("You purchased "+item.name+"!");
+}
+
+function showPanel(id,button){
+ document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+}
+
+function render(){
+ document.getElementById("coins").textContent=Math.floor(state.coins);
+ document.getElementById("level").textContent=state.level;
+ document.getElementById("income").textContent=getIncome();
+ document.getElementById("roomsCount").textContent=state.rooms.length;
+ document.getElementById("visitors").textContent=state.visitors;
+ document.getElementById("xpText").textContent=state.xp+" / "+(state.level*100);
+ document.getElementById("xp").style.width=(state.xp/(state.level*100)*100)+"%";
+
+ document.getElementById("profileLevel").textContent=state.level;
+ document.getElementById("profileCoins").textContent=Math.floor(state.coins);
+ document.getElementById("profileRooms").textContent=state.rooms.length;
+
+ document.getElementById("quest1").textContent=state.collected>0?"1/1":"0/1";
+ document.getElementById("quest2").textContent=state.upgraded?"1/1":"0/1";
+ document.getElementById("quest3").textContent=state.rooms.length>1?"1/1":"0/1";
+
+ document.getElementById("rooms").innerHTML=
+ state.rooms.map((r,i)=>{
+  const cost=r.level*100;
+  return `<div class="room">
+   <div class="room-icon">${r.icon}</div>
+   <div class="room-info">
+    <b>${r.name}</b>
+    <small>Level ${r.level} · ${r.level*r.base} coins/min</small>
+   </div>
+   <button class="action" onclick="upgradeRoom(${i})">⬆ ${cost}</button>
+  </div>`;
+ }).join("")+
+ `<div class="room">
+  <div class="room-icon">➕</div>
+  <div class="room-info">
+   <b>Build New Room</b>
+   <small>Expand your haunted hotel</small>
+  </div>
+  <button class="action" onclick="unlockRoom()">BUILD ${500+(state.rooms.length-1)*500}</button>
+ </div>`;
+
+ document.getElementById("shopItems").innerHTML=shop.map((item,i)=>
+ `<div class="shop-item">
+  <div style="font-size:30px">${item.icon}</div>
+  <div class="info"><b>${item.name}</b><small>${item.description}</small></div>
+  <button class="action" onclick="buyItem(${i})">🪙 ${item.cost}</button>
+ </div>`).join("");
+}
+
+function resetGame(){
+ if(!confirm("Are you sure you want to reset all your progress?"))return;
+ localStorage.removeItem(SAVE_KEY);
+ location.reload();
+}
+
+loadGame();
+
+setInterval(()=>{
+ const income=getIncome();
+ state.coins+=income/60;
+ render();
+ saveGame();
+},1000);
+
+window.addEventListener("beforeunload",saveGame);
+</script>
+</body>
+</html>
