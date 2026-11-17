@@ -132,6 +132,180 @@ header{
 .shop-item .info{flex:1}
 .shop-item small{display:block;color:#b9b1d1;margin-top:5px}
 .empty{text-align:center;padding:35px 15px;color:#c4bddf;line-height:1.7}
+ 
+/* ===== HAUNTED EMPIRE GRAPHICS UPGRADE 1 ===== */
+
+.scene {
+ background:
+  radial-gradient(ellipse at 80% 35%,#49436f 0%,transparent 35%),
+  linear-gradient(180deg,#171b3b 0%,#39345f 65%,#24213d 100%);
+ box-shadow:0 12px 35px #09081780;
+}
+
+/* Distant haunted hills */
+.scene::before {
+ content:"";
+ position:absolute;
+ bottom:17px;
+ left:-5%;
+ width:110%;
+ height:110px;
+ background:linear-gradient(180deg,#292747,#191a32);
+ clip-path:polygon(0 60%,12% 25%,25% 55%,42% 12%,57% 50%,72% 20%,88% 53%,100% 30%,100% 100%,0 100%);
+ z-index:0;
+}
+
+/* Atmospheric night fog */
+.scene::after {
+ content:"";
+ position:absolute;
+ inset:0;
+ pointer-events:none;
+ background:
+  linear-gradient(180deg,transparent 55%,#aaa0e00c 100%);
+ z-index:4;
+}
+
+.hotel {
+ z-index:2;
+ background:linear-gradient(90deg,#493858,#755783 45%,#554064);
+ border:5px solid #30243f;
+ box-shadow:
+  0 0 25px #a77bce30,
+  inset 0 0 25px #d9a5ff20;
+}
+
+/* Mansion chimney */
+.hotel::before {
+ content:"";
+ position:absolute;
+ right:35px;
+ top:-75px;
+ width:25px;
+ height:72px;
+ background:linear-gradient(90deg,#45334f,#76577a,#49344e);
+ border:4px solid #30243f;
+ border-bottom:0;
+ z-index:0;
+}
+
+/* Detailed roof */
+.roof {
+ z-index:1;
+ background:linear-gradient(135deg,#514063,#302440 70%);
+ filter:drop-shadow(0 7px 5px #100c20aa);
+}
+
+.roof::after {
+ content:"";
+ position:absolute;
+ left:15%;
+ top:35px;
+ width:70%;
+ height:4px;
+ background:#8d739d;
+ opacity:.55;
+}
+
+/* Hotel sign */
+.sign {
+ z-index:3;
+ background:linear-gradient(135deg,#46304f,#241b35);
+ border:1px solid #a58ab7;
+ box-shadow:0 0 15px #d8b2ff30;
+ letter-spacing:1px;
+}
+
+/* Beautiful glowing windows */
+.windows {
+ position:relative;
+ z-index:3;
+}
+
+.window {
+ background:linear-gradient(135deg,#fff0ac,#ffc85e);
+ border:5px solid #392b46;
+ box-shadow:
+  0 0 8px #ffdc83,
+  0 0 22px #ffc85e88,
+  inset 0 0 12px #fff6cf;
+ position:relative;
+}
+
+.window::after {
+ content:"";
+ position:absolute;
+ top:0;
+ left:50%;
+ height:100%;
+ width:3px;
+ background:#9e714f;
+ opacity:.65;
+}
+
+.window.dark {
+ background:linear-gradient(135deg,#39344e,#25243a);
+ box-shadow:inset 0 0 12px #171629;
+}
+
+/* Front entrance */
+.door {
+ z-index:3;
+ background:linear-gradient(90deg,#211a32,#49334f,#211a32);
+ border:4px solid #21182f;
+ box-shadow:0 0 15px #120d20;
+}
+
+.ground {
+ z-index:3;
+ background:linear-gradient(180deg,#29243f,#171528);
+ box-shadow:0 -5px 20px #b49ad622;
+}
+
+/* Moonlight */
+.moon {
+ animation:moonGlow 4s ease-in-out infinite;
+ z-index:1;
+}
+
+@keyframes moonGlow {
+ 50% {
+  box-shadow:0 0 45px #ffe8a2,0 0 75px #d6baff66;
+ }
+}
+
+/* Floating ghost */
+.ghost {
+ z-index:5;
+ animation:ghostFloat 2.8s ease-in-out infinite;
+ filter:drop-shadow(0 0 12px #d8c5ff);
+}
+
+@keyframes ghostFloat {
+ 0%,100% {transform:translateY(0) rotate(-4deg)}
+ 50% {transform:translateY(-15px) rotate(4deg)}
+}
+
+.scene-label {
+ z-index:6;
+ border:1px solid #74618e;
+ box-shadow:0 3px 12px #09081766;
+}
+
+/* Better overall visual polish */
+.stat,.room,.shop-item {
+ box-shadow:0 5px 15px #09081735;
+}
+
+.action {
+ background:linear-gradient(135deg,#a17ae5,#7355bd);
+ box-shadow:0 3px 0 #49366f;
+}
+
+.action:active {
+ transform:translateY(2px);
+ box-shadow:none;
+}
 </style>
 </head>
 
